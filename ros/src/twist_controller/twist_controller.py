@@ -13,7 +13,9 @@ class Controller(object):
 	self.stopWatch = time.time()*1000
 	#self.Lowpass = LowPassFilter(0.3,1)
         accel_limit = args[5]
+	#decel is percent braking
         decel_limit = args[6]
+	self.Mass = args[7]
 	self.PIDThrottle = PID(0.8,0,0.0,mn=decel_limit,mx=accel_limit)
 	self.YawCtrl = YawController(args[0], args[1], args[2], args[3], args[4])
 
@@ -28,9 +30,10 @@ class Controller(object):
             throttle = accel
             breaking = 0.
         else:
-            breaking = -accel*BRAKE_MULTIPLIER
+            breaking = -accel*(self.Mass/(3.28633534*3.28633534))
             throttle = 0.
-       
+#	if time_delta > 30000:
+#		return 0, 25, steer
         # Return throttle, brake, steer
         return throttle, breaking, steer
 
